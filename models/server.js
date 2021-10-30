@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const { dbConnection } = require('../database/config');
 
 class Server{
 
@@ -7,11 +8,21 @@ class Server{
         this.app = express();
         this.port = process.env.PORT;
         this.usuariosPath = '/api/usuarios';
+
+        // Conectarse con la base de datos
+        this.conectarDB(); 
+
         // Middlewares
         this.middlewares(); 
         // Rutas de mi aplicacion
         this.routes();
     }
+
+    async conectarDB(){
+        await dbConnection();
+    }
+
+
     middlewares(){
 
         /*CORS define una forma en la que un navegador y un servidor pueden 
@@ -35,7 +46,7 @@ class Server{
     listen(){
         this.app.listen(this.port,() => {
             console.log('El servidor corriendo en el puerto: '
-            + this.port +`Example app listening at http://localhost:${this.port}`);
+            + this.port +` Example app listening at http://localhost:${this.port}`);
         });
     }
 
