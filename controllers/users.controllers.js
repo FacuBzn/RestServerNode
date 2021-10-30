@@ -8,19 +8,14 @@ const usersGet = async(req= request, res = response) => {
 
     /* {const query = req.query; se puede desestructurar la variable query 
     en varios parametros de la url*}/
-
     /* const {q, nombre="no name", apikey ,page=1 ,limit  } = req.query; */
+
     
     const { limite = 5, desde=0 } = req.query;
     const query = {estado:true};
 
- /*    const usuarios = await Usuario.find(query)
-        .skip(Number (desde))
-        .limit(Number (limite));
-    
-    const total = await Usuario.countDocuments(query); */
-
-    const respuesta = Promise.all([
+    /* const respuesta = await Promise.all([ */
+    const [ total, usuarios ] = await Promise.all([
         Usuario.countDocuments(query),
         Usuario.find(query)
             .skip(Number (desde))
@@ -28,6 +23,7 @@ const usersGet = async(req= request, res = response) => {
     ])
 
     res.json( {
+     /*    respuesta */
         total,
         usuarios
     });
@@ -71,11 +67,14 @@ const usersPut = async (req, res = response) => {
 
     res.json( usuario );
 }
-const usersDelete = (req, res = response) => {
+const usersDelete = async(req, res = response) => {
 
-    res.json( {
-        msg: 'Delete API - Controlador'
-    })
+    const { id } = req.params;
+    //fisicamente lo borramos
+    /* const usuario =  await Usuario.findByIdAndDelete(id);  Este metodo es para borrarlo de forma fisica de la BD no conviene*/
+    const usuario = await Usuario.findByIdAndUpdate(id, { estado: false });
+
+    res.json( usuario );
 }
 const usersPatch = (req, res = response) => {
 
