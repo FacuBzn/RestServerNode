@@ -6,7 +6,18 @@ const { usersGet,
         usersDelete,
         usersPatch } = require('../controllers/users.controllers');
 const { esRoleValido, existeEmail, existeUsuarioPorId } = require('../helpers/db-validators');
-const { validacampos } = require('../middlewares/validar-campos'); 
+// -------------- middlewares --------------------------
+/* const { validacampos } = require('../middlewares/validar-campos'); 
+const { validarJWT } = require('../middlewares/validar-jwt');
+const { esAdminRole, tieneRole } = require('../middlewares/validar-roles'); */
+
+const {
+        validacampos,
+        validarJWT,
+        esAdminRole,
+        tieneRole } = require('../middlewares');
+
+// ----------------- models ----------------------------
 const Role = require('../models/role');
 
 const router = Router();
@@ -37,6 +48,9 @@ router.put('/:id',[
 ],usersPut);
 
 router.delete('/:id',[
+    validarJWT,
+    /* esAdminRole, */
+    tieneRole('ADMIN_ROLE','VENTAS_ROLE'),
     check('id', 'No es un ID correspondiente ').isMongoId(),
     check('id').custom( existeUsuarioPorId ),
     validacampos

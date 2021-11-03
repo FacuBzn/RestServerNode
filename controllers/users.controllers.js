@@ -70,12 +70,11 @@ const usersPut = async (req, res = response) => {
 const usersDelete = async(req, res = response) => {
 
     const { id } = req.params;
-    //fisicamente lo borramos
-    /* const usuario =  await Usuario.findByIdAndDelete(id);  Este metodo es para borrarlo de forma fisica de la BD no conviene*/
     const usuario = await Usuario.findByIdAndUpdate(id, { estado: false });
-
-    res.json( usuario );
+  
+    res.json( {usuario} );
 }
+
 const usersPatch = (req, res = response) => {
 
     res.json( {

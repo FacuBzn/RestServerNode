@@ -36,7 +36,8 @@ const UsuarioSchema = Schema({
 
 /* metodo que se utiliza para borrar u ocultar algunos atributos de un json*/
 UsuarioSchema.methods.toJSON = function(){
-    const { __v, password, ... usuario} = this.toObject();
+    const { __v, password, _id, ... usuario} = this.toObject();
+    usuario.uid = _id;
     return usuario;
 }
 
