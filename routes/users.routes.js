@@ -7,10 +7,6 @@ const { usersGet,
         usersPatch } = require('../controllers/users.controllers');
 const { esRoleValido, existeEmail, existeUsuarioPorId } = require('../helpers/db-validators');
 // -------------- middlewares --------------------------
-/* const { validacampos } = require('../middlewares/validar-campos'); 
-const { validarJWT } = require('../middlewares/validar-jwt');
-const { esAdminRole, tieneRole } = require('../middlewares/validar-roles'); */
-
 const {
         validacampos,
         validarJWT,
