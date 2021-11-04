@@ -1,12 +1,13 @@
-const { response } = require("express");
+const { response, json } = require("express");
 const bcryptjs = require('bcryptjs');
 
 const Usuario = require('../models/usuario');
+
 const { generarJWT } = require("../helpers/generarJWT");
+const { googleVerify } = require("../helpers/google-verify");
 
 
-const login =async (req, res = response) => {
-    
+const login =async (req, res = response) => {  
     const{ correo, password } = req.body;
 
     try {
@@ -32,12 +33,9 @@ const login =async (req, res = response) => {
             return res.status(400).json({
                 msg:'Usuario / Password no son correctas - password'
             });
-
         }
-
         //Generar el JWT
-        const token = await generarJWT( usuario.id ); 
-                
+        const token = await generarJWT( usuario.id );                
         
         res.json({
             usuario,
@@ -50,9 +48,56 @@ const login =async (req, res = response) => {
             msg:'Algo salio mal, hable con el administrador'
         })
     }
+}
 
+const googleSignIn = async (req, res=response) => {
+
+    const { id_token } = req.body;
+    try {
+
+        /* const { nombre, img, emaiil } = await googleVerify( id_token ); */
+        const { nombre, img, correo } = await googleVerify( id_token );
+ 
+        let usuario = await Usuario.findOne({ correo });
+
+        if ( !usuario ) {
+            //tengo que crearlo
+            const data ={
+                nombre,
+                password: ':)',
+                img,
+                correo,
+                google: true 
+            };
+
+            usuario = new Usuario( data );
+            await usuario.save();
+        }
+        // si el usuario en DB
+        if ( !usuario.estado ) {
+            return res.status(401).json({
+                msg: 'Hable con el administrador, el USUARIO se encuentra BLOQUEADO'
+            });
+        }
+        //Generar el JWT
+        const token = await generarJWT( usuario.id );
+
+        /* console.log(googleUser); */
+        res.json({
+            usuario,
+            token
+        });
+
+    } catch (error) {
+        json.status(400).json({
+            ok: false,
+            msg:' El token no se pudo verificar'
+        })
+    }
+        
 }
 
 module.exports = {
-    login
+    login,
+    googleSignIn
 }
