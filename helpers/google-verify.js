@@ -1,8 +1,8 @@
-const {OAuth2Client} = require('google-auth-library');
+const { OAuth2Client } = require('google-auth-library');
 
 const client = new OAuth2Client( process.env.GOOGLE_CLIENTE_ID );
 
-async function googleVerify( token = '') {
+const googleVerify = async ( token = '') => {
 
   const ticket = await client.verifyIdToken({
       idToken: token,
@@ -11,15 +11,15 @@ async function googleVerify( token = '') {
       // Or, if multiple clients access the backend:
       //[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
   });
-  const { name, picture, email } = ticket.getPayload();
+    const   {   name: nombre, 
+                img: picture, 
+                email: correo
+            } = ticket.getPayload();
 
-  return{
-      nombre: name,
-      img: picture,
-      correo: email
-  }
-
+    return { nombre, img, correo };
+        
 }
+
 
 module.exports = {
     googleVerify

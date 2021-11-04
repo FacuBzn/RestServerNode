@@ -7,13 +7,13 @@ const { generarJWT } = require("../helpers/generarJWT");
 const { googleVerify } = require("../helpers/google-verify");
 
 
-const login =async (req, res = response) => {  
+const login = async (req, res = response) => {  
     const{ correo, password } = req.body;
 
     try {
 
         //Verificar si el email existe
-        const usuario = await Usuario.findOne({correo});
+        const usuario = await Usuario.findOne({ correo });
         if ( !usuario ) {
             return res.status(400).json({
                 msg:'Usuario / Password no son correctas - correo'
@@ -50,7 +50,7 @@ const login =async (req, res = response) => {
     }
 }
 
-const googleSignIn = async (req, res=response) => {
+const googleSignIn = async (req, res = response) => {
 
     const { id_token } = req.body;
     try {
@@ -62,7 +62,7 @@ const googleSignIn = async (req, res=response) => {
 
         if ( !usuario ) {
             //tengo que crearlo
-            const data ={
+            const data = {
                 nombre,
                 password: ':)',
                 img,
@@ -89,9 +89,10 @@ const googleSignIn = async (req, res=response) => {
         });
 
     } catch (error) {
+
         json.status(400).json({
             ok: false,
-            msg:' El token no se pudo verificar'
+            msg:' El token de google no se pudo verificar'
         })
     }
         
