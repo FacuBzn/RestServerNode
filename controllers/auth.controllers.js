@@ -57,24 +57,29 @@ const googleSignIn = async (req, res = response) => {
 
         /* const { nombre, img, emaiil } = await googleVerify( id_token ); */
         const { nombre, img, correo } = await googleVerify( id_token );
+        /* console.log('id_token:'+ id_token +'\n'); */
  
         let usuario = await Usuario.findOne({ correo });
 
         if ( !usuario ) {
             //tengo que crearlo
+            /* console.log('1'+ usuario); */
             const data = {
                 nombre,
                 password: ':)',
                 img,
                 correo,
-                google: true 
+                google: true,
+                role:true
             };
+            /* console.log('2'+ usuario); */
 
             usuario = new Usuario( data );
             await usuario.save();
         }
         // si el usuario en DB
         if ( !usuario.estado ) {
+            /* console.log('Estado del usuario'+ usuario.estado); */
             return res.status(401).json({
                 msg: 'Hable con el administrador, el USUARIO se encuentra BLOQUEADO'
             });
@@ -90,6 +95,7 @@ const googleSignIn = async (req, res = response) => {
 
     } catch (error) {
 
+        /* console.log('error:'+error); */
         json.status(400).json({
             ok: false,
             msg:' El token de google no se pudo verificar'
